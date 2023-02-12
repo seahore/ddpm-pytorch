@@ -33,10 +33,12 @@ class DDPMTrainer(nn.Module):
         eps = torch.randn_like(x_0)
         # L5: gradient descend on loss
         x_t = self.c1[t] * x_0 + self.c2[t] * eps
-        return F.mse_loss(eps, self.net(x_t.float(), t))
+        loss = F.mse_loss(eps, self.net(x_t.float(), t))
+        return loss
         
 class DDPMSampler(nn.Module):
     def __init__(self, T, beta_1, beta_T, net, size):
+        self.net = net
         self.size = size
     
         self.register_buffer('betas', torch.linspace(beta_1, beta_T, T).double())
